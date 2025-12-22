@@ -66,7 +66,7 @@ console.log('【用户输入】', messages[1].content)
 let response = await modelWithTools.invoke(messages)
 console.log(response)
 
-// messages.push(response)
+messages.push(response)
 
 while (response.tool_calls && response.tool_calls.length > 0) {
     console.log(`\n【检测到】${response.tool_calls.length} 个工具调用`)
