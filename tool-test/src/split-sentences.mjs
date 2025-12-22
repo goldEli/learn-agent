@@ -1,39 +1,6 @@
-
-
-/**
-Create a Pull Request description for the refactoring of the Pagination component.
-
-Main changes
-
-Extract the business logic and state management that were previously coupled within the component into custom hooks.
-
-Refactor the UI component to be presentation-only.
-
-Update the page layer to focus solely on composing hooks and UI components.
-
-Improve the overall testability and maintainability of the codebase after refactoring.
-
-The PR description should include
-
-The background and motivation for this refactoring.
-
-A summary of the key changes that were made.
-
-The benefits introduced by this refactoring (e.g. readability, reusability, testability).
-
-Any behavioral changes, potential risks, or breaking changes, if applicable.
-
-Constraints
-
-Do not include concrete implementation code.
-
-Focus on clear, professional, and engineering-oriented language.
-
-Assume the audience consists of team members and code reviewers.
- */
-
 import dotenv from "dotenv";
 import { ChatOpenAI } from "@langchain/openai";
+import fs from 'node:fs';
 
 dotenv.config();
 
@@ -71,33 +38,34 @@ Create a Pull Request description for the refactoring of the Pagination componen
 
 Main changes
 
+Extract the business logic and state management that were previously coupled within the component into custom hooks.
+
+Refactor the UI component to be presentation-only.
+
+Update the page layer to focus solely on composing hooks and UI components.
+
+Improve the overall testability and maintainability of the codebase after refactoring.
+
+The PR description should include
+
+The background and motivation for this refactoring.
+
+A summary of the key changes that were made.
+
+The benefits introduced by this refactoring (e.g. readability, reusability, testability).
+
+Any behavioral changes, potential risks, or breaking changes, if applicable.
+
+Constraints
+
+Do not include concrete implementation code.
+
+Focus on clear, professional, and engineering-oriented language.
+
+Assume the audience consists of team members and code reviewers.
+
 `;
 
-// Extract the business logic and state management that were previously coupled within the component into custom hooks.
-
-// Refactor the UI component to be presentation-only.
-
-// Update the page layer to focus solely on composing hooks and UI components.
-
-// Improve the overall testability and maintainability of the codebase after refactoring.
-
-// The PR description should include
-
-// The background and motivation for this refactoring.
-
-// A summary of the key changes that were made.
-
-// The benefits introduced by this refactoring (e.g. readability, reusability, testability).
-
-// Any behavioral changes, potential risks, or breaking changes, if applicable.
-
-// Constraints
-
-// Do not include concrete implementation code.
-
-// Focus on clear, professional, and engineering-oriented language.
-
-// Assume the audience consists of team members and code reviewers.
 
 // 分割段落
 function splitParagraphs(text) {
@@ -105,7 +73,18 @@ function splitParagraphs(text) {
 }
 
 async function main() {
-    const paragraphs = splitParagraphs(originalText);
+    // get shell arguments
+    const args = process.argv.slice(2);
+    if (args.length === 0) {
+        console.log('请输入要处理的文本');
+        return;
+    }
+
+    const text = args[0];
+    // console.log(text);
+    // return
+
+    const paragraphs = splitParagraphs(text);
     console.log(paragraphs);
     const summary = []
     for (const para of paragraphs) {
@@ -121,6 +100,12 @@ async function main() {
         summary.push(para);
     }
     console.log(summary);
+    // write to dist/summary.json
+    // if dist folder not exist, create it
+    if (!fs.existsSync('./dist')) {
+        fs.mkdirSync('./dist');
+    }
+    fs.writeFileSync('./dist/summary.json', JSON.stringify(summary));
 }
 
 main();
