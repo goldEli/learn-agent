@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { ChatOpenAI } from "@langchain/openai";
 import fs from 'node:fs';
+import Path from 'node:path';
 
 dotenv.config();
 
@@ -33,38 +34,7 @@ async function extractSentences(text) {
 
 // console.log(response.content);
 
-const originalText = `
-Create a Pull Request description for the refactoring of the Pagination component.
 
-Main changes
-
-Extract the business logic and state management that were previously coupled within the component into custom hooks.
-
-Refactor the UI component to be presentation-only.
-
-Update the page layer to focus solely on composing hooks and UI components.
-
-Improve the overall testability and maintainability of the codebase after refactoring.
-
-The PR description should include
-
-The background and motivation for this refactoring.
-
-A summary of the key changes that were made.
-
-The benefits introduced by this refactoring (e.g. readability, reusability, testability).
-
-Any behavioral changes, potential risks, or breaking changes, if applicable.
-
-Constraints
-
-Do not include concrete implementation code.
-
-Focus on clear, professional, and engineering-oriented language.
-
-Assume the audience consists of team members and code reviewers.
-
-`;
 
 
 // 分割段落
@@ -85,7 +55,7 @@ async function main() {
     // return
 
     const paragraphs = splitParagraphs(text);
-    console.log(paragraphs);
+    // console.log(paragraphs);
     const summary = []
     for (const para of paragraphs) {
         const words = para.split(' ');
@@ -106,6 +76,10 @@ async function main() {
         fs.mkdirSync('./dist');
     }
     fs.writeFileSync('./dist/summary.json', JSON.stringify(summary));
+    // print full file path
+    const __dirname = Path.dirname(new URL(import.meta.url).pathname);
+    const fullFilePath = Path.join(__dirname, '../dist/summary.json');
+    console.log(`cat ${fullFilePath}`);
 }
 
 main();
