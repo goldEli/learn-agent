@@ -39,7 +39,8 @@ async function extractSentences(text) {
 
 // 分割段落
 function splitParagraphs(text) {
-    return text.split('\n').map(para => para.trim()).filter(para => para !== '');
+    // split by \n or .
+    return text.split(/\n|\./).map(para => para.trim()).filter(para => para !== '');
 }
 
 async function main() {
