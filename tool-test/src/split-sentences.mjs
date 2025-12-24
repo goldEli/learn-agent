@@ -17,12 +17,14 @@ const model = new ChatOpenAI({
 
 // ai 提炼句式
 async function extractSentences(text) {
+    console.log(`开始提炼句子`);
     const response = await model.invoke(`
         请提炼出以下英文中的短语：${text}
         约束：
         1. 每个句式单独成行。
         2. 不要解释短语的含义，只返回短语本身。
         `);
+    console.log(`提炼句子完成 ======`);
     const ret = response.content;
     // remove <think> tags
     return ret.replace(/<think>.*?<\/think>/gs, '').trim();
@@ -51,12 +53,14 @@ async function main() {
         return;
     }
 
+
     const text = args[0];
     // console.log(text);
     // return
 
     const paragraphs = splitParagraphs(text);
     // console.log(paragraphs);
+    console.log(`段落分割完成，共 ${paragraphs.length} 段`);
     const summary = []
     for (const para of paragraphs) {
         const words = para.split(' ');
@@ -84,3 +88,4 @@ async function main() {
 }
 
 main();
+
