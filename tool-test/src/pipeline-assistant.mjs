@@ -19,7 +19,6 @@ const runPipelineTool = tool(
     const pipelineArg = Array.isArray(pipelines) ? pipelines.join(',') : pipelines;
     const command = `pnpm run start -p "${pipelineArg}" -b "${branch}"`;
     console.log(`执行命令: ${command}`)
-    return 
 
     return new Promise((resolve, reject) => {
       const [cmd, ...args] = command.split(' ');
