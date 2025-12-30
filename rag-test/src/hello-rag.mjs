@@ -86,11 +86,13 @@ const documents = [
   }),
 ];
 
+// 创建向量数据库
 const vectorStore = await MemoryVectorStore.fromDocuments(
   documents,
   embeddings,
 );
 
+// 创建检索器 k=3 表示返回最相关的 3 个文档
 const retriever = vectorStore.asRetriever({ k: 3 });
 
 const questions = [
