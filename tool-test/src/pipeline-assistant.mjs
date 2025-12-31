@@ -21,12 +21,10 @@ const runPipelineTool = tool(
     console.log(`执行命令: ${command}`)
 
     return new Promise((resolve, reject) => {
-      const [cmd, ...args] = command.split(' ');
-
-      const child = spawn(cmd, args, {
+      // 使用zsh -l -c来执行命令，确保加载shell配置和别名
+      const child = spawn('zsh', ['-i', '-c', `source ~/.zshrc && ${command}`], {
         cwd: process.cwd(),
         stdio: 'inherit',
-        shell: true,
       });
 
       child.on('error', (error) => {
@@ -107,7 +105,7 @@ pipeline 和 分支名称提取：
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('请提供消息参数，例如: node pipeline-assistant.mjs "帮忙部署 web-trade rc 分支"');
+  console.log('请提供消息参数，例如: node pipeline-assistant.mjs "帮忙部署 web-trade-2 stg2 分支"');
   process.exit(1);
 }
 
