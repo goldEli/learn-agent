@@ -17,7 +17,7 @@ const model = new ChatOpenAI({
 const runPipelineTool = tool(
   async ({ pipelines, branch }) => {
     const pipelineArg = Array.isArray(pipelines) ? pipelines.join(',') : pipelines;
-    const command = `pnpm run start -p "${pipelineArg}" -b "${branch}"`;
+    const command = `run_pipeline -p "${pipelineArg}" -b "${branch}"`;
     console.log(`执行命令: ${command}`)
 
     return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ const runPipelineTool = tool(
   },
   {
     name: 'run_pipeline',
-    description: '执行 pnpm run start 命令来运行指定的 pipeline',
+    description: '执行 run_pipeline 命令来运行指定的 pipeline',
     schema: z.object({
       pipelines: z.array(z.string()).describe('要运行的 pipeline 名称列表'),
       branch: z.string().describe('git 分支名称'),
@@ -107,7 +107,7 @@ pipeline 和 分支名称提取：
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('请提供消息参数，例如: node tool-assistant.mjs "Run the Web Separation pipeline on the develop branch"');
+  console.log('请提供消息参数，例如: node pipeline-assistant.mjs "帮忙部署 web-trade rc 分支"');
   process.exit(1);
 }
 
