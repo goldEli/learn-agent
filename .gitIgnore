@@ -3,3 +3,5 @@
 .DS_Store
 
 **/*/dist
+
+test_milvus/volumes
