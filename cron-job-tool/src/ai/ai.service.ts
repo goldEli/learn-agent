@@ -53,15 +53,16 @@ export class AiService {
   constructor(
     @Inject('CHAT_MODEL') model: ChatOpenAI,
     @Inject('QUERY_USER_TOOL') private readonly queryUserTool: any,
+    @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: any,
   ) {
-    this.modelWithTools = model.bindTools([this.queryUserTool]);
-    
+    this.modelWithTools = model.bindTools([this.queryUserTool, this.sendMailTool]);
+
   }
 
   async runChain(query: string): Promise<string> {
     const messages: BaseMessage[] = [
       new SystemMessage(
-        '你是一个智能助手，可以在需要时调用工具（如 query_user）来查询用户信息，再用结果回答用户的问题。',
+        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件），再用结果回答用户的问题。',
       ),
       new HumanMessage(query),
     ];
@@ -93,6 +94,16 @@ export class AiService {
               content: result,
             }),
           );
+        } else if (toolName === 'send_mail') {
+          const result = await this.sendMailTool.invoke(toolCall.args);
+
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: result,
+            }),
+          );
         }
       }
     }
@@ -101,7 +112,7 @@ export class AiService {
   async *runChainStream(query: string): AsyncIterable<string> {
     const messages: BaseMessage[] = [
       new SystemMessage(
-        '你是一个智能助手，可以在需要时调用工具（如 query_user）来查询用户信息，再用结果回答用户的问题。',
+        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件），再用结果回答用户的问题。',
       ),
       new HumanMessage(query),
     ];
@@ -112,7 +123,7 @@ export class AiService {
 
       let fullAIMessage: AIMessageChunk | null = null;
 
-      for await(const chunk of stream as AsyncIterable<AIMessageChunk>) {
+      for await (const chunk of stream as AsyncIterable<AIMessageChunk>) {
         // 使用 concat 持续拼接，得到本轮完整的 AIMessageChunk
         fullAIMessage = fullAIMessage ? fullAIMessage.concat(chunk) : chunk;
 
@@ -147,6 +158,16 @@ export class AiService {
         if (toolName === 'query_user') {
           const args = queryUserArgsSchema.parse(toolCall.args);
           const result = await this.queryUserTool.invoke(args);
+
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: result,
+            }),
+          );
+        } else if (toolName === 'send_mail') {
+          const result = await this.sendMailTool.invoke(toolCall.args);
 
           messages.push(
             new ToolMessage({
