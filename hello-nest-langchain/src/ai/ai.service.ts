@@ -10,9 +10,7 @@ export class AiService {
   private readonly chain: Runnable;
 
   constructor(@Inject(ConfigService) configService: ConfigService) {
-    const prompt = PromptTemplate.fromTemplate(
-      '请回答以下问题：\n\n{query}',
-    );
+    const prompt = PromptTemplate.fromTemplate('请回答以下问题：\n\n{query}');
     const model = new ChatOpenAI({
       temperature: 0.7,
       modelName: configService.get('MODEL_NAME'),

@@ -12,11 +12,14 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    BookModule, AiModule, ConfigModule.forRoot({
-    isGlobal: true,
-    envFilePath: '.env',
-  })],
+    BookModule,
+    AiModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
