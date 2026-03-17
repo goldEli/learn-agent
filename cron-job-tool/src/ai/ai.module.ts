@@ -10,7 +10,9 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 @Module({
   controllers: [AiController],
-  providers: [AiService, UserService,
+  providers: [
+    AiService,
+    UserService,
     {
       provide: 'CHAT_MODEL',
       useFactory: (configService: ConfigService) => {
@@ -23,7 +25,8 @@ import { MailerService } from '@nestjs-modules/mailer';
         });
       },
       inject: [ConfigService],
-    }, {
+    },
+    {
       provide: 'QUERY_USER_TOOL',
       useFactory: (userService: UserService) => {
         const queryUserArgsSchema = z.object({
@@ -57,27 +60,32 @@ import { MailerService } from '@nestjs-modules/mailer';
     },
     {
       provide: 'SEND_MAIL_TOOL',
-      useFactory: (mailerService: MailerService, configService: ConfigService) => {
+      useFactory: (
+        mailerService: MailerService,
+        configService: ConfigService,
+      ) => {
         const sendMailArgsSchema = z.object({
-          to: z
-            .email()
-            .describe('收件人邮箱地址，例如：someone@example.com'),
+          to: z.email().describe('收件人邮箱地址，例如：someone@example.com'),
           subject: z.string().describe('邮件主题'),
           text: z.string().optional().describe('纯文本内容，可选'),
           html: z.string().optional().describe('HTML 内容，可选'),
         });
 
         return tool(
-          async ({ to, subject, text, html }: {
+          async ({
+            to,
+            subject,
+            text,
+            html,
+          }: {
             to: string;
             subject: string;
             text?: string;
             html?: string;
           }) => {
-            const fallbackFrom =
-              configService.get<string>('MAIL_FROM')
-            
-            console.log("开始发送邮件")
+            const fallbackFrom = configService.get<string>('MAIL_FROM');
+
+            // console.log('开始发送邮件', { to, subject, text, html, from: fallbackFrom });
 
             try {
               await mailerService.sendMail({
@@ -106,4 +114,4 @@ import { MailerService } from '@nestjs-modules/mailer';
     },
   ],
 })
-export class AiModule { }
+export class AiModule {}
