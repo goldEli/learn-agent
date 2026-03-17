@@ -64,17 +64,19 @@ export class AiService {
     @Inject('CHAT_MODEL') model: ChatOpenAI,
     @Inject('QUERY_USER_TOOL') private readonly queryUserTool: any,
     @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: any,
+    @Inject('WEB_SEARCH_TOOL') private readonly webSearchTool: any,
   ) {
     this.modelWithTools = model.bindTools([
       this.queryUserTool,
       this.sendMailTool,
+      this.webSearchTool,
     ]);
   }
 
   async runChain(query: string): Promise<string> {
     const messages: BaseMessage[] = [
       new SystemMessage(
-        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件），再用结果回答用户的问题。',
+        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件, web_search 来搜索互联网），再用结果回答用户的问题。',
       ),
       new HumanMessage(query),
     ];
@@ -116,6 +118,24 @@ export class AiService {
               content: result,
             }),
           );
+        } else if (toolName === 'web_search') {
+          const result = await this.webSearchTool.invoke(toolCall.args);
+
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: result,
+            }),
+          );
+        } else {
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: `工具 ${toolName} 不存在`,
+            }),
+          );
         }
       }
     }
@@ -124,7 +144,7 @@ export class AiService {
   async *runChainStream(query: string): AsyncIterable<string> {
     const messages: BaseMessage[] = [
       new SystemMessage(
-        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件），再用结果回答用户的问题。',
+        '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件, web_search 来搜索互联网），再用结果回答用户的问题。',
       ),
       new HumanMessage(query),
     ];
@@ -186,6 +206,24 @@ export class AiService {
               tool_call_id: toolCallId,
               name: toolName,
               content: result,
+            }),
+          );
+        } else if (toolName === 'web_search') {
+          const result = await this.webSearchTool.invoke(toolCall.args);
+
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: result,
+            }),
+          );
+        } else {
+          messages.push(
+            new ToolMessage({
+              tool_call_id: toolCallId,
+              name: toolName,
+              content: `工具 ${toolName} 不存在`,
             }),
           );
         }
