@@ -25,8 +25,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
           },
         },
         defaults: {
-          from:
-            configService.get<string>('MAIL_FROM')
+          from: configService.get<string>('MAIL_FROM'),
         },
       }),
     }),
@@ -34,4 +33,4 @@ import { MailerModule } from '@nestjs-modules/mailer';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

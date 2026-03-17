@@ -14,9 +14,19 @@ import { Runnable } from '@langchain/core/runnables';
 
 const database = {
   users: {
-    '001': { id: '001', name: '张三', email: 'zhangsan@example.com', role: 'admin' },
+    '001': {
+      id: '001',
+      name: '张三',
+      email: 'zhangsan@example.com',
+      role: 'admin',
+    },
     '002': { id: '002', name: '李四', email: 'lisi@example.com', role: 'user' },
-    '003': { id: '003', name: '王五', email: 'wangwu@example.com', role: 'user' },
+    '003': {
+      id: '003',
+      name: '王五',
+      email: 'wangwu@example.com',
+      role: 'user',
+    },
   },
 };
 
@@ -26,7 +36,7 @@ const queryUserArgsSchema = z.object({
 
 type QueryUserArgs = {
   userId: string;
-}
+};
 
 // const queryUserTool = tool(
 //   async ({ userId }: QueryUserArgs) => {
@@ -55,8 +65,10 @@ export class AiService {
     @Inject('QUERY_USER_TOOL') private readonly queryUserTool: any,
     @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: any,
   ) {
-    this.modelWithTools = model.bindTools([this.queryUserTool, this.sendMailTool]);
-
+    this.modelWithTools = model.bindTools([
+      this.queryUserTool,
+      this.sendMailTool,
+    ]);
   }
 
   async runChain(query: string): Promise<string> {
@@ -109,7 +121,7 @@ export class AiService {
     }
   }
 
-  async *runChainStream(query: string): AsyncIterable<string> {
+  async *runChainStream(query: string): AsyncIterable<string> {
     const messages: BaseMessage[] = [
       new SystemMessage(
         '你是一个智能助手，可以在需要时调用工具（如 query_user 来查询用户信息, send_mail 来发送邮件），再用结果回答用户的问题。',
@@ -133,7 +145,7 @@ export class AiService {
 
         // 只要当前轮次还没出现 tool 调用的 chunk，就可以把文本内容流式往外推
         if (!hasToolCallChunk && chunk.content) {
-          yield chunk.content as string
+          yield chunk.content as string;
         }
       }
 
