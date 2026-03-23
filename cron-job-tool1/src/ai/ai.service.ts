@@ -9,6 +9,7 @@ import {
   ToolMessage,
 } from '@langchain/core/messages';
 import { Runnable } from '@langchain/core/runnables';
+import { StructuredTool } from '@langchain/core/tools';
 
 /**
  * 下面是最初版本的内联工具定义，只是保留做参考，不再实际使用。
@@ -54,12 +55,12 @@ export class AiService {
 
   constructor(
     @Inject('CHAT_MODEL') model: ChatOpenAI,
-    @Inject('QUERY_USER_TOOL') private readonly queryUserTool: any,
-    @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: any,
-    @Inject('WEB_SEARCH_TOOL') private readonly webSearchTool: any,
-    @Inject('DB_USERS_CRUD_TOOL') private readonly dbUsersCrudTool: any,
-    @Inject('TIME_NOW_TOOL') private readonly timeNowTool: any,
-    @Inject('CRON_JOB_TOOL') private readonly cronJobTool: any,
+    @Inject('QUERY_USER_TOOL') private readonly queryUserTool: StructuredTool,
+    @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: StructuredTool,
+    @Inject('WEB_SEARCH_TOOL') private readonly webSearchTool: StructuredTool,
+    @Inject('DB_USERS_CRUD_TOOL') private readonly dbUsersCrudTool: StructuredTool,
+    @Inject('TIME_NOW_TOOL') private readonly timeNowTool: StructuredTool,
+    @Inject('CRON_JOB_TOOL') private readonly cronJobTool: StructuredTool,
   ) {
     this.modelWithTools = model.bindTools([
       this.queryUserTool,
