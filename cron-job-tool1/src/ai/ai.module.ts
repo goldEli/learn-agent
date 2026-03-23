@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { UserService } from './user.service';
 import { UsersModule } from '../users/users.module';
 import { ToolModule } from '../tool/tool.module';
+import { INJECT_TOKENS } from '../common/constants';
 
 @Module({
   imports: [UsersModule, ToolModule],
@@ -14,7 +15,7 @@ import { ToolModule } from '../tool/tool.module';
     AiService,
     UserService,
     {
-      provide: 'QUERY_USER_TOOL',
+      provide: INJECT_TOKENS.QUERY_USER_TOOL,
       useFactory: (userService: UserService) => {
         const queryUserArgsSchema = z.object({
           userId: z.string().describe('用户 ID，例如: 001, 002, 003'),

@@ -10,6 +10,7 @@ import {
 } from '@langchain/core/messages';
 import { Runnable } from '@langchain/core/runnables';
 import { StructuredTool } from '@langchain/core/tools';
+import { INJECT_TOKENS } from '../common/constants';
 
 /**
  * 下面是最初版本的内联工具定义，只是保留做参考，不再实际使用。
@@ -54,13 +55,13 @@ export class AiService {
   private readonly modelWithTools: Runnable<BaseMessage[], AIMessage>;
 
   constructor(
-    @Inject('CHAT_MODEL') model: ChatOpenAI,
-    @Inject('QUERY_USER_TOOL') private readonly queryUserTool: StructuredTool,
-    @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: StructuredTool,
-    @Inject('WEB_SEARCH_TOOL') private readonly webSearchTool: StructuredTool,
-    @Inject('DB_USERS_CRUD_TOOL') private readonly dbUsersCrudTool: StructuredTool,
-    @Inject('TIME_NOW_TOOL') private readonly timeNowTool: StructuredTool,
-    @Inject('CRON_JOB_TOOL') private readonly cronJobTool: StructuredTool,
+    @Inject(INJECT_TOKENS.CHAT_MODEL) model: ChatOpenAI,
+    @Inject(INJECT_TOKENS.QUERY_USER_TOOL) private readonly queryUserTool: StructuredTool,
+    @Inject(INJECT_TOKENS.SEND_MAIL_TOOL) private readonly sendMailTool: StructuredTool,
+    @Inject(INJECT_TOKENS.WEB_SEARCH_TOOL) private readonly webSearchTool: StructuredTool,
+    @Inject(INJECT_TOKENS.DB_USERS_CRUD_TOOL) private readonly dbUsersCrudTool: StructuredTool,
+    @Inject(INJECT_TOKENS.TIME_NOW_TOOL) private readonly timeNowTool: StructuredTool,
+    @Inject(INJECT_TOKENS.CRON_JOB_TOOL) private readonly cronJobTool: StructuredTool,
   ) {
     this.modelWithTools = model.bindTools([
       this.queryUserTool,

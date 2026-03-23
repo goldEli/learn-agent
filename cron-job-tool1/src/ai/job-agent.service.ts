@@ -9,6 +9,7 @@ import {
 } from '@langchain/core/messages';
 import { Runnable } from '@langchain/core/runnables';
 import { StructuredTool } from '@langchain/core/tools';
+import { INJECT_TOKENS } from '../common/constants';
 
 @Injectable()
 export class JobAgentService {
@@ -16,11 +17,11 @@ export class JobAgentService {
   private readonly modelWithTools: Runnable<BaseMessage[], AIMessage>;
 
   constructor(
-    @Inject('CHAT_MODEL') model: ChatOpenAI,
-    @Inject('SEND_MAIL_TOOL') private readonly sendMailTool: StructuredTool,
-    @Inject('WEB_SEARCH_TOOL') private readonly webSearchTool: StructuredTool,
-    @Inject('DB_USERS_CRUD_TOOL') private readonly dbUsersCrudTool: StructuredTool,
-    @Inject('TIME_NOW_TOOL') private readonly timeNowTool: StructuredTool,
+    @Inject(INJECT_TOKENS.CHAT_MODEL) model: ChatOpenAI,
+    @Inject(INJECT_TOKENS.SEND_MAIL_TOOL) private readonly sendMailTool: StructuredTool,
+    @Inject(INJECT_TOKENS.WEB_SEARCH_TOOL) private readonly webSearchTool: StructuredTool,
+    @Inject(INJECT_TOKENS.DB_USERS_CRUD_TOOL) private readonly dbUsersCrudTool: StructuredTool,
+    @Inject(INJECT_TOKENS.TIME_NOW_TOOL) private readonly timeNowTool: StructuredTool,
   ) {
     this.modelWithTools = model.bindTools([
       this.sendMailTool,
