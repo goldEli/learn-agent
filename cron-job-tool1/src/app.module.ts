@@ -10,7 +10,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { Job } from './job/entities/job.entity';
-import { CronExpression, ScheduleModule, SchedulerRegistry } from '@nestjs/schedule';
+import {
+  CronExpression,
+  ScheduleModule,
+  SchedulerRegistry,
+} from '@nestjs/schedule';
 import { JobModule } from './job/job.module';
 import { CronJob } from 'cron';
 
@@ -43,7 +47,7 @@ import { CronJob } from 'cron';
         transport: {
           host: configService.get<string>('MAIL_HOST'),
           port: Number(configService.get<string>('MAIL_PORT')),
-          secure: configService.get<string>('MAIL_SECURE') === 'true',
+          secure: true,
           auth: {
             user: configService.get<string>('MAIL_USER'),
             pass: configService.get<string>('MAIL_PASS'),
@@ -73,7 +77,6 @@ export class AppModule implements OnApplicationBootstrap {
     // setTimeout(() => {
     //   this.schedulerRegistry.deleteCronJob('job1');
     // }, 5000);
-
     // const intervalRef = setInterval(() => {
     //   console.log('run interval job');
     // }, 1000);
@@ -81,7 +84,6 @@ export class AppModule implements OnApplicationBootstrap {
     // setTimeout(() => {
     //   this.schedulerRegistry.deleteInterval('interval1');
     // }, 5000);
-
     // const timeoutRef = setTimeout(() => {
     //   console.log('run timeout job');
     // }, 3000);
@@ -91,4 +93,3 @@ export class AppModule implements OnApplicationBootstrap {
     // }, 5000);
   }
 }
-

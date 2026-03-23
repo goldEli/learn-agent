@@ -36,15 +36,22 @@ export class SendMailToolService {
       }) => {
         const fallbackFrom = this.configService.get<string>('MAIL_FROM');
 
-        await this.mailerService.sendMail({
-          to,
-          subject,
-          text: text ?? '（无文本内容）',
-          html: html ?? `<p>${text ?? '（无 HTML 内容）'}</p>`,
-          from: fallbackFrom,
-        });
+        // console.log('开始发送邮件', { to, subject, text, html, from: fallbackFrom });
 
-        return `邮件已发送到 ${to}，主题为「${subject}」`;
+        try {
+          await this.mailerService.sendMail({
+            to,
+            subject,
+            text: text ?? '（无文本内容）',
+            html: html ?? `<p>${text ?? '（无 HTML 内容）'}</p>`,
+            from: fallbackFrom,
+          });
+        } catch (error) {
+          console.error('发送邮件失败:', error);
+          return `发送邮件失败：${error.message}`;
+        }
+
+        return `邮件已发送到 ${to}，主题为「${subject}」`;
       },
       {
         name: 'send_mail',
@@ -55,5 +62,3 @@ export class SendMailToolService {
     );
   }
 }
-
-
