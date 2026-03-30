@@ -11,6 +11,9 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
+      tencentcloud-sdk-nodejs:
+        specifier: ^4.1.201
+        version: 4.1.201
       tencentcloud-sdk-nodejs-tts:
         specifier: ^4.1.182
         version: 4.1.182
@@ -155,6 +158,10 @@ packages:
 
   tencentcloud-sdk-nodejs-tts@4.1.182:
     resolution: {integrity: sha512-JAwsmqt3+N7Pkpa1tpW2zwKzzyuCE5unVI3x5qX8rEkoy1OM4SXbdM5X6Vcztww4fl3tLWBRey4xetMse4ucDQ==}
+    engines: {node: '>=10'}
+
+  tencentcloud-sdk-nodejs@4.1.201:
+    resolution: {integrity: sha512-1tDHv5RxaYAXOIbFtMWdwxLbxyD9v+sdMsVHZKMOkUnjDHTESxOA3ZC0pAte3gpv+bn2gYEy82JcltY7e9g9xw==}
     engines: {node: '>=10'}
 
   tr46@0.0.3:
@@ -325,6 +332,21 @@ snapshots:
     dependencies:
       tencentcloud-sdk-nodejs-common: 4.1.122
       tslib: 1.13.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  tencentcloud-sdk-nodejs@4.1.201:
+    dependencies:
+      form-data: 3.0.4
+      get-stream: 6.0.1
+      https-proxy-agent: 5.0.1
+      ini: 5.0.0
+      is-stream: 2.0.1
+      json-bigint: 1.0.0
+      node-fetch: 2.7.0
+      tslib: 1.13.0
+      uuid: 9.0.1
     transitivePeerDependencies:
       - encoding
       - supports-color
