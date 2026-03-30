@@ -20,7 +20,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       maxListeners: 200,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public')
+      rootPath: join(process.cwd(), 'public'),
     }),
     SpeechModule,
   ],

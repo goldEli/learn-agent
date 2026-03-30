@@ -2,8 +2,11 @@ import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createHmac, randomUUID } from 'node:crypto';
 import { OnEvent } from '@nestjs/event-emitter';
-import { AI_TTS_STREAM_EVENT, type AiTtsStreamEvent } from '../common/stream-events';
-import WebSocket from 'ws';
+import {
+  AI_TTS_STREAM_EVENT,
+  type AiTtsStreamEvent,
+} from '../common/stream-events';
+import WebSocket = require('ws');
 
 type ClientSession = {
   sessionId: string;
@@ -27,7 +30,9 @@ export class TtsRelayService implements OnModuleDestroy {
     this.secretId = configService.get<string>('SECRET_ID') ?? '';
     this.secretKey = configService.get<string>('SECRET_KEY') ?? '';
     this.appId = Number(configService.get<string>('APP_ID') ?? 0);
-    this.voiceType = Number(configService.get<string>('TTS_VOICE_TYPE') ?? 101001);
+    this.voiceType = Number(
+      configService.get<string>('TTS_VOICE_TYPE') ?? 101001,
+    );
   }
 
   onModuleDestroy(): void {
@@ -77,7 +82,11 @@ export class TtsRelayService implements OnModuleDestroy {
       case 'chunk': {
         const chunk = event.chunk?.trim();
         if (!chunk) return;
-        if (!session.ready || !session.tencentWs || session.tencentWs.readyState !== WebSocket.OPEN) {
+        if (
+          !session.ready ||
+          !session.tencentWs ||
+          session.tencentWs.readyState !== WebSocket.OPEN
+        ) {
           session.pendingChunks.push(chunk);
           return;
         }
@@ -86,7 +95,10 @@ export class TtsRelayService implements OnModuleDestroy {
       }
       case 'end': {
         this.flushPendingChunks(session);
-        if (session.tencentWs && session.tencentWs.readyState === WebSocket.OPEN) {
+        if (
+          session.tencentWs &&
+          session.tencentWs.readyState === WebSocket.OPEN
+        ) {
           session.tencentWs.send(
             JSON.stringify({
               session_id: session.sessionId,
@@ -179,7 +191,11 @@ export class TtsRelayService implements OnModuleDestroy {
   }
 
   private flushPendingChunks(session: ClientSession): void {
-    if (!session.ready || !session.tencentWs || session.tencentWs.readyState !== WebSocket.OPEN) {
+    if (
+      !session.ready ||
+      !session.tencentWs ||
+      session.tencentWs.readyState !== WebSocket.OPEN
+    ) {
       return;
     }
     while (session.pendingChunks.length > 0) {
@@ -221,7 +237,10 @@ export class TtsRelayService implements OnModuleDestroy {
     this.logger.log(`TTS session closed: ${sessionId}, reason: ${reason}`);
   }
 
-  private sendClientJson(clientWs: WebSocket, payload: Record<string, unknown>): void {
+  private sendClientJson(
+    clientWs: WebSocket,
+    payload: Record<string, unknown>,
+  ): void {
     console.log('sendClientJson', clientWs.readyState);
     if (clientWs.readyState !== WebSocket.OPEN) return;
     clientWs.send(JSON.stringify(payload));
@@ -248,9 +267,13 @@ export class TtsRelayService implements OnModuleDestroy {
       .map((k) => `${k}=${params[k]}`)
       .join('&');
     const rawStr = `GETtts.cloud.tencent.com/stream_wsv2?${signStr}`;
-    const signature = createHmac('sha1', this.secretKey).update(rawStr).digest('base64');
+    const signature = createHmac('sha1', this.secretKey)
+      .update(rawStr)
+      .digest('base64');
     const searchParams = new URLSearchParams({
-      ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
+      ...Object.fromEntries(
+        Object.entries(params).map(([k, v]) => [k, String(v)]),
+      ),
       Signature: signature,
     });
 

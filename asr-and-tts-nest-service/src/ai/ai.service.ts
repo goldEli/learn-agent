@@ -4,7 +4,10 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import type { Runnable } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AI_TTS_STREAM_EVENT, type AiTtsStreamEvent } from '../common/stream-events';
+import {
+  AI_TTS_STREAM_EVENT,
+  type AiTtsStreamEvent,
+} from '../common/stream-events';
 
 @Injectable()
 export class AiService {
@@ -18,7 +21,10 @@ export class AiService {
     this.chain = prompt.pipe(model).pipe(new StringOutputParser());
   }
 
-  async *streamChain(query: string, ttsSessionId?: string): AsyncGenerator<string> {
+  async *streamChain(
+    query: string,
+    ttsSessionId?: string,
+  ): AsyncGenerator<string> {
     try {
       const stream = await this.chain.stream({ query });
       for await (const chunk of stream) {
@@ -33,7 +39,10 @@ export class AiService {
         yield chunk;
       }
       if (ttsSessionId) {
-        const endEvent: AiTtsStreamEvent = { type: 'end', sessionId: ttsSessionId };
+        const endEvent: AiTtsStreamEvent = {
+          type: 'end',
+          sessionId: ttsSessionId,
+        };
         this.eventEmitter.emit(AI_TTS_STREAM_EVENT, endEvent);
       }
     } catch (error) {

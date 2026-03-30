@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AiService } from './ai.service';
 import { AiController } from './ai.controller';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ChatOpenAI } from '@langchain/openai';
 
 @Module({
+  imports: [ConfigModule],
   controllers: [AiController],
   providers: [
     AiService,
@@ -12,10 +13,10 @@ import { ChatOpenAI } from '@langchain/openai';
       provide: 'CHAT_MODEL',
       useFactory: (configService: ConfigService) => {
         return new ChatOpenAI({
-          model: configService.get('MODEL_NAME'),
-          apiKey: configService.get('OPENAI_API_KEY'),
+          model: configService.get<string>('MODEL_NAME'),
+          apiKey: configService.get<string>('OPENAI_API_KEY'),
           configuration: {
-            baseURL: configService.get('OPENAI_BASE_URL'),
+            baseURL: configService.get<string>('OPENAI_BASE_URL'),
           },
         });
       },
