@@ -2,11 +2,8 @@ import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createHmac, randomUUID } from 'node:crypto';
 import { OnEvent } from '@nestjs/event-emitter';
-import {
-  AI_TTS_STREAM_EVENT,
-  type AiTtsStreamEvent,
-} from '../common/stream-events';
-import WebSocket = require('ws');
+import { AI_TTS_STREAM_EVENT, type AiTtsStreamEvent } from '../common/stream-events';
+import WebSocket from 'ws';
 
 type ClientSession = {
   sessionId: string;
@@ -149,7 +146,14 @@ export class TtsRelayService implements OnModuleDestroy {
         return;
       }
 
-      const raw = data.toString();
+      const raw =
+        typeof data === 'string'
+          ? data
+          : Array.isArray(data)
+            ? Buffer.concat(data).toString('utf8')
+            : Buffer.isBuffer(data)
+              ? data.toString('utf8')
+              : Buffer.from(data).toString('utf8');
       let msg: Record<string, unknown> | undefined;
       try {
         msg = JSON.parse(raw) as Record<string, unknown>;
@@ -163,9 +167,16 @@ export class TtsRelayService implements OnModuleDestroy {
       }
 
       if (Number(msg.code) && Number(msg.code) !== 0) {
+        const messageValue = msg.message;
+        const message =
+          typeof messageValue === 'string'
+            ? messageValue
+            : typeof messageValue === 'number'
+              ? String(messageValue)
+              : 'Tencent TTS error';
         this.sendClientJson(session.clientWs, {
           type: 'tts_error',
-          message: String(msg.message ?? 'Tencent TTS error'),
+          message,
           code: Number(msg.code),
         });
         this.closeSession(session.sessionId, 'tencent error');

@@ -2,11 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { WebSocketServer } from 'ws';
 import { TtsRelayService } from './speech/tts-relay.service';
+import type { Server } from 'node:http';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const ttsRelayService = app.get(TtsRelayService);
-  const server = app.getHttpServer();
+  const server = app.getHttpServer() as Server;
 
   const ttsWss = new WebSocketServer({
     server,

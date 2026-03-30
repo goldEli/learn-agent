@@ -26,7 +26,7 @@ export class AiService {
     ttsSessionId?: string,
   ): AsyncGenerator<string> {
     try {
-      const stream = await this.chain.stream({ query });
+      const stream = (await this.chain.stream({ query })) as AsyncIterable<string>;
       for await (const chunk of stream) {
         if (ttsSessionId) {
           const event: AiTtsStreamEvent = {
