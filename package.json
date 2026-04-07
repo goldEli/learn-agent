@@ -1,5 +1,9 @@
 {
 	"dependencies": {
-		"@nestjs/serve-static": "^5.0.4"
+		"@langchain/core": "^1.1.39",
+		"@langchain/openai": "^1.4.2",
+		"@nestjs/config": "^4.0.3",
+		"@nestjs/serve-static": "^5.0.4",
+		"zod": "^4.3.6"
 	}
 }
