@@ -8,6 +8,6 @@ const rows = [
 export function getProductBySku(sku) {
     const key = String(sku).trim().toUpperCase();
     const row = rows.find((r) => r.sku.toUpperCase() === key);
-    if (!row) returnJSON.stringify({ found: false, sku: String(sku).trim() });
-    returnJSON.stringify({ found: true, ...row });
+    if (!row) return JSON.stringify({ found: false, sku: String(sku).trim() });
+    return JSON.stringify({ found: true, ...row });
 }
